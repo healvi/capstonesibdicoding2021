@@ -1,3 +1,4 @@
+import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,15 @@ class _EventPageState extends State<EventPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('SIB App'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return SettingsPage();
+                }));
+              },
+              icon: const Icon(Icons.settings, color: Colors.white))
+        ],
       ),
       body: _buildList(context),
     );

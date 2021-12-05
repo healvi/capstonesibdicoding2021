@@ -1,15 +1,14 @@
-import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatefulWidget {
-  static const routeName = '/profile_page';
+class SettingsPage extends StatefulWidget {
+  static const routeName = '/settings_page';
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
@@ -22,16 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SIB App'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return SettingsPage();
-                }));
-              },
-              icon: const Icon(Icons.settings, color: Colors.white))
-        ],
+        title: Text('SIB App'),
       ),
       body: _buildList(context),
     );
