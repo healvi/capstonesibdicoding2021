@@ -1,4 +1,6 @@
 import 'package:capstone/common/styles.dart';
+import 'package:capstone/ui/auth/login_page.dart';
+import 'package:capstone/ui/auth/signin_page.dart';
 import 'package:capstone/ui/event_page.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/ui/profile_page.dart';
@@ -47,6 +49,8 @@ class MyApp extends StatelessWidget {
       initialRoute: SplashScreen.routeName,
       routes: {
         SplashScreen.routeName: (context) => const SplashScreen(),
+        SignInPage.routeName: (context) => SignInPage(),
+        LoginPage.routeName: (context) => HomePage(),
         HomePage.routeName: (context) => HomePage(),
         EventPage.routeName: (context) => EventPage(),
         ProfilePage.routeName: (context) => ProfilePage(),
