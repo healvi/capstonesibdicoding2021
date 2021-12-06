@@ -10,6 +10,13 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  bool _showPassword = true;
+  void _togglevisibillity() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +51,16 @@ class _SignInPageState extends State<SignInPage> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32)),
                     hintText: 'Enter Your Password',
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        _togglevisibillity();
+                      },
+                      child: Icon(
+                          _showPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.blueAccent),
+                    ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 20, horizontal: 20)),
               ),

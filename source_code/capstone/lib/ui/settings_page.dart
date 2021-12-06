@@ -1,6 +1,8 @@
+import 'package:capstone/provider/preferences_provider.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = '/settings_page';
@@ -15,7 +17,25 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildList(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
+    return Consumer<PreferencesProvider>(
+      builder: (context, provider, child) {
+        return ListView(
+          children: [
+            Material(
+              child: ListTile(
+                title: Text('Dark Theme'),
+                trailing: Switch.adaptive(
+                  value: provider.isDarkTheme,
+                  onChanged: (value) {
+                    provider.enableDarkTheme(value);
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildAndroid(BuildContext context) {

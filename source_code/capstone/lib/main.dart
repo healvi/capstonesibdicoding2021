@@ -1,3 +1,4 @@
+import 'package:capstone/common/navigation.dart';
 import 'package:capstone/common/styles.dart';
 import 'package:capstone/ui/auth/login_page.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
@@ -7,7 +8,6 @@ import 'package:capstone/ui/profile_page.dart';
 import 'package:capstone/ui/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-// import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'SIB App',
       theme: ThemeData(
         primaryColor: primaryColor,

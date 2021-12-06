@@ -1,3 +1,5 @@
+import 'package:capstone/common/navigation.dart';
+import 'package:capstone/ui/auth/signin_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _showPassword = true;
+  void _togglevisibillity() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -19,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       color: Colors.white,
       child: Center(
         child: Container(
-          height: 200,
+          height: 250,
           padding: EdgeInsets.only(left: 10.0, right: 10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,12 +46,22 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextField(
                 keyboardType: TextInputType.text,
-                obscureText: true,
+                obscureText: _showPassword,
                 autofocus: false,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32)),
                     hintText: 'Enter Your Password',
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        _togglevisibillity();
+                      },
+                      child: Icon(
+                          _showPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.blueAccent),
+                    ),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 20, horizontal: 20)),
               ),
@@ -60,7 +79,18 @@ class _LoginPageState extends State<LoginPage> {
                       "Login",
                       style: TextStyle(fontSize: 20),
                     ),
-                  ))
+                  )),
+              Container(
+                width: double.infinity,
+                child: TextButton(
+                    onPressed: () {
+                      Navigation.intent(SignInPage.routeName);
+                    },
+                    child: Text(
+                      "Belum daftar",
+                      style: TextStyle(color: Colors.black),
+                    )),
+              )
             ],
           ),
         ),
