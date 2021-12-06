@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
       routes: {
         SplashScreen.routeName: (context) => const SplashScreen(),
         SignInPage.routeName: (context) => SignInPage(),
-        LoginPage.routeName: (context) => HomePage(),
+        LoginPage.routeName: (context) => LoginPage(),
         HomePage.routeName: (context) => HomePage(),
         EventPage.routeName: (context) => EventPage(),
         ProfilePage.routeName: (context) => ProfilePage(),

@@ -1,4 +1,4 @@
-import 'package:capstone/ui/home_page.dart';
+import 'package:capstone/ui/auth/login_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -10,7 +10,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     moveToRestaurantListPage() {
       Future.delayed(Duration(seconds: _splashScreenDuration)).then((value) {
-        Navigator.pushReplacementNamed(context, HomePage.routeName);
+        Navigator.pushReplacementNamed(context, LoginPage.routeName);
       });
     }
 
