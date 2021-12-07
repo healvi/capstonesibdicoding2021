@@ -1,8 +1,11 @@
 import 'package:capstone/common/navigation.dart';
+import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
+import 'package:capstone/ui/dashboard_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login_page';
@@ -12,6 +15,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _showPassword = true;
+
+  late AuthProvider stateProvider;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   void _togglevisibillity() {
     setState(() {
       _showPassword = !_showPassword;
@@ -23,7 +30,24 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  Widget _buildList(BuildContext context) {
+  Widget _buildLogin(BuildContext context) {
+    return Consumer<AuthProvider>(builder: (context, state, _) {
+      stateProvider = state;
+      if (state.state == ResultState.loading) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (state.state == ResultState.Hasdata) {
+        return _navigate(context);
+      } else if (state.state == ResultState.Nodata) {
+        return _buildPage(context);
+      } else if (state.state == ResultState.Error) {
+        return _buildPage(context);
+      } else {
+        return _buildPage(context);
+      }
+    });
+  }
+
+  Widget _buildPage(BuildContext context) {
     return Container(
       color: Colors.white,
       child: Center(
@@ -35,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               TextField(
+                controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 autofocus: false,
                 decoration: InputDecoration(
@@ -45,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                         EdgeInsets.symmetric(vertical: 20, horizontal: 20)),
               ),
               TextField(
+                controller: _passwordController,
                 keyboardType: TextInputType.text,
                 obscureText: _showPassword,
                 autofocus: false,
@@ -74,7 +100,9 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(25)),
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10)),
-                    onPressed: () {},
+                    onPressed: () {
+                      _login();
+                    },
                     child: Text(
                       "Login",
                       style: TextStyle(fontSize: 20),
@@ -101,10 +129,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         actions: [],
       ),
-      body: _buildList(context),
+      body: _buildLogin(context),
     );
   }
 
@@ -114,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
         middle: Text('Login'),
         transitionBetweenRoutes: false,
       ),
-      child: _buildList(context),
+      child: _buildLogin(context),
     );
   }
 
@@ -125,4 +153,27 @@ class _LoginPageState extends State<LoginPage> {
       iosBuilder: _buildIos,
     );
   }
+
+  void _login() {
+    stateProvider.loginUser(_emailController.text, _passwordController.text);
+  }
+
+  Widget _navigate(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
 }
+
+      // showDialog(
+      //                   context: context,
+      //                   builder: (context) => AlertDialog(
+      //                     title: Text("Error"),
+      //                     content: Text(result.message),
+      //                     actions: <Widget>[
+      //                       FlatButton(
+      //                         onPressed: () {
+      //                           Navigator.pop(context);
+      //                         },
+      //                         child: Text("OK"),
+      //                       )
+      //                     ],
+      //                   ));
