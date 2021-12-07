@@ -1,7 +1,11 @@
+import 'package:capstone/common/navigation.dart';
+import 'package:capstone/provider/auth_provider.dart';
+import 'package:capstone/ui/dashboard_page.dart';
 import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
   static const routeName = '/sign_page';
@@ -11,6 +15,9 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   bool _showPassword = true;
+  late AuthProvider stateProvider;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   void _togglevisibillity() {
     setState(() {
       _showPassword = !_showPassword;
@@ -20,6 +27,23 @@ class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Widget _buildRegister(BuildContext context) {
+    return Consumer<AuthProvider>(builder: (context, state, _) {
+      stateProvider = state;
+      if (state.state == ResultState.loading) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (state.state == ResultState.Hasdata) {
+        return Navigation.intent(DashboardPage.routeName);
+      } else if (state.state == ResultState.Nodata) {
+        return _buildList(context);
+      } else if (state.state == ResultState.Error) {
+        return _buildList(context);
+      } else {
+        return _buildList(context);
+      }
+    });
   }
 
   Widget _buildList(BuildContext context) {
@@ -34,6 +58,7 @@ class _SignInPageState extends State<SignInPage> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               TextField(
+                controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 autofocus: false,
                 decoration: InputDecoration(
@@ -44,8 +69,9 @@ class _SignInPageState extends State<SignInPage> {
                         EdgeInsets.symmetric(vertical: 20, horizontal: 20)),
               ),
               TextField(
+                controller: _passwordController,
                 keyboardType: TextInputType.text,
-                obscureText: true,
+                obscureText: _showPassword,
                 autofocus: false,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -73,7 +99,9 @@ class _SignInPageState extends State<SignInPage> {
                             borderRadius: BorderRadius.circular(25)),
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10)),
-                    onPressed: () {},
+                    onPressed: () {
+                      _register();
+                    },
                     child: Text(
                       "Sign In",
                       style: TextStyle(fontSize: 20),
@@ -100,7 +128,7 @@ class _SignInPageState extends State<SignInPage> {
               icon: const Icon(Icons.settings, color: Colors.white))
         ],
       ),
-      body: _buildList(context),
+      body: _buildRegister(context),
     );
   }
 
@@ -110,7 +138,7 @@ class _SignInPageState extends State<SignInPage> {
         middle: Text('SIB App'),
         transitionBetweenRoutes: false,
       ),
-      child: _buildList(context),
+      child: _buildRegister(context),
     );
   }
 
@@ -120,5 +148,9 @@ class _SignInPageState extends State<SignInPage> {
       androidBuilder: _buildAndroid,
       iosBuilder: _buildIos,
     );
+  }
+
+  void _register() {
+    stateProvider.createUser(_emailController.text, _passwordController.text);
   }
 }

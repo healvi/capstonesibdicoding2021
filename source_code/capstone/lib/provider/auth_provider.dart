@@ -13,6 +13,9 @@ class AuthProvider extends ChangeNotifier {
     loginUser(email, pass);
   }
 
+  late AuthResult _result;
+  AuthResult get result => _result;
+
   FirebaseAuth auth = FirebaseAuth.instance;
   bool _isLogin = false;
   late ResultState _state;
@@ -21,12 +24,13 @@ class AuthProvider extends ChangeNotifier {
   Future<dynamic> createUser(email, pass) async {
     try {
       _state = ResultState.loading;
-      AuthResult result = (await auth.createUserWithEmailAndPassword(
-          email: email, password: pass)) as AuthResult;
+      final hasil = (await auth.createUserWithEmailAndPassword(
+              email: email, password: pass))
+          .user;
       _isLogin = true;
       _state = ResultState.Hasdata;
       notifyListeners();
-      return AuthResult(result.user, "success");
+      return AuthResult(user: hasil!, message: "success");
     } on FirebaseAuthException catch (e) {
       _isLogin = false;
       _state = ResultState.Error;
@@ -38,12 +42,13 @@ class AuthProvider extends ChangeNotifier {
   Future<dynamic> loginUser(email, pass) async {
     try {
       _state = ResultState.loading;
-      AuthResult result = (await auth.signInWithEmailAndPassword(
-          email: email, password: pass)) as AuthResult;
+      final hasil =
+          (await auth.signInWithEmailAndPassword(email: email, password: pass))
+              .user;
       _isLogin = true;
       _state = ResultState.Hasdata;
       notifyListeners();
-      return AuthResult(result.user, "success");
+      return AuthResult(user: hasil!, message: "success");
     } on FirebaseAuthException catch (e) {
       _isLogin = false;
       _state = ResultState.Error;

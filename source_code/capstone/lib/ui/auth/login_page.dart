@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
       if (state.state == ResultState.loading) {
         return const Center(child: CircularProgressIndicator());
       } else if (state.state == ResultState.Hasdata) {
-        return _navigate(context);
+        return Center(child: CircularProgressIndicator());
       } else if (state.state == ResultState.Nodata) {
         return _buildPage(context);
       } else if (state.state == ResultState.Error) {
@@ -156,10 +156,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() {
     stateProvider.loginUser(_emailController.text, _passwordController.text);
-  }
-
-  Widget _navigate(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
   }
 }
 
