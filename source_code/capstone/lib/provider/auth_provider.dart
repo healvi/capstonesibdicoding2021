@@ -17,7 +17,7 @@ class AuthProvider extends ChangeNotifier {
   AuthResult get result => _result;
 
   FirebaseAuth auth = FirebaseAuth.instance;
-  bool _isLogin = false;
+  bool isLogin = false;
   late ResultState _state;
   ResultState get state => _state;
 
@@ -27,12 +27,12 @@ class AuthProvider extends ChangeNotifier {
       final hasil = (await auth.createUserWithEmailAndPassword(
               email: email, password: pass))
           .user;
-      _isLogin = true;
+      isLogin = true;
       _state = ResultState.Hasdata;
       notifyListeners();
       return AuthResult(user: hasil!, message: "success");
     } on FirebaseAuthException catch (e) {
-      _isLogin = false;
+      isLogin = false;
       _state = ResultState.Error;
       notifyListeners();
       return e.toString();
@@ -45,12 +45,12 @@ class AuthProvider extends ChangeNotifier {
       final hasil =
           (await auth.signInWithEmailAndPassword(email: email, password: pass))
               .user;
-      _isLogin = true;
+      isLogin = true;
       _state = ResultState.Hasdata;
       notifyListeners();
       return AuthResult(user: hasil!, message: "success");
     } on FirebaseAuthException catch (e) {
-      _isLogin = false;
+      isLogin = false;
       _state = ResultState.Error;
       notifyListeners();
       return e.toString();
@@ -59,6 +59,6 @@ class AuthProvider extends ChangeNotifier {
 
   void signOut() {
     auth.signOut();
-    _isLogin = false;
+    isLogin = false;
   }
 }

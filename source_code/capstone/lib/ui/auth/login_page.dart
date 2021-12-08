@@ -2,6 +2,7 @@ import 'package:capstone/common/navigation.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
 import 'package:capstone/ui/dashboard_page.dart';
+import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       if (state.state == ResultState.loading) {
         return const Center(child: CircularProgressIndicator());
       } else if (state.state == ResultState.Hasdata) {
-        return Center(child: CircularProgressIndicator());
+        return _toDashboard(context, state.isLogin);
       } else if (state.state == ResultState.Nodata) {
         return _buildPage(context);
       } else if (state.state == ResultState.Error) {
@@ -45,6 +46,19 @@ class _LoginPageState extends State<LoginPage> {
         return _buildPage(context);
       }
     });
+  }
+
+  Widget _toDashboard(BuildContext context, bool isLogin) {
+    final int _delay = 1;
+    moveDashboard() {
+      Future.delayed(Duration(seconds: _delay)).then((value) {
+        Navigator.pushReplacementNamed(context, HomePage.routeName);
+      });
+    }
+
+    moveDashboard();
+
+    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildPage(BuildContext context) {
@@ -155,7 +169,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() {
-    stateProvider.loginUser(_emailController.text, _passwordController.text);
+    var order = stateProvider.loginUser(
+        _emailController.text, _passwordController.text);
+    print(order);
   }
 }
 

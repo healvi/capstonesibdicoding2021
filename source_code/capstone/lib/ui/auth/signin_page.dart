@@ -1,6 +1,7 @@
 import 'package:capstone/common/navigation.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/ui/dashboard_page.dart';
+import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,7 +36,7 @@ class _SignInPageState extends State<SignInPage> {
       if (state.state == ResultState.loading) {
         return const Center(child: CircularProgressIndicator());
       } else if (state.state == ResultState.Hasdata) {
-        return Navigation.intent(DashboardPage.routeName);
+        return _toDashboard(context, state.isLogin);
       } else if (state.state == ResultState.Nodata) {
         return _buildList(context);
       } else if (state.state == ResultState.Error) {
@@ -44,6 +45,19 @@ class _SignInPageState extends State<SignInPage> {
         return _buildList(context);
       }
     });
+  }
+
+  Widget _toDashboard(BuildContext context, bool isLogin) {
+    final int _delay = 1;
+    moveDashboard() {
+      Future.delayed(Duration(seconds: _delay)).then((value) {
+        Navigator.pushReplacementNamed(context, HomePage.routeName);
+      });
+    }
+
+    moveDashboard();
+
+    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildList(BuildContext context) {
@@ -117,7 +131,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SIB App'),
+        title: const Text('SIB App'),
         actions: [
           IconButton(
               onPressed: () {
@@ -151,6 +165,8 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _register() {
-    stateProvider.createUser(_emailController.text, _passwordController.text);
+    var order = stateProvider.createUser(
+        _emailController.text, _passwordController.text);
+    print(order);
   }
 }
