@@ -30,7 +30,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   return SettingsPage();
                 }));
               },
-              icon: const Icon(Icons.settings, color: Colors.white))
+              icon: const Icon(Icons.settings, color: Colors.white)),
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.power_off, color: Colors.red))
         ],
       ),
       body: _buildList(context),

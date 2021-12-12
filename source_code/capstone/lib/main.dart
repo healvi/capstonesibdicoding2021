@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => AuthProvider(email: '', pass: ''),
+          create: (_) => AuthProvider(email: '', pass: '', name: ''),
         ),
         ChangeNotifierProvider(
           create: (_) => PreferencesProvider(
@@ -40,35 +40,10 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           navigatorKey: navigatorKey,
           title: 'SIB App',
-          theme: ThemeData(
-            primaryColor: primaryColor,
-            accentColor: secondaryColor,
-            scaffoldBackgroundColor: Colors.white,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            textTheme: myTextTheme,
-            appBarTheme: AppBarTheme(
-              textTheme: myTextTheme.apply(bodyColor: Colors.black),
-              elevation: 0,
-            ),
-            bottomNavigationBarTheme: BottomNavigationBarThemeData(
-              selectedItemColor: secondaryColor,
-              unselectedItemColor: Colors.grey,
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                primary: secondaryColor,
-                textStyle: TextStyle(),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(0),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          theme: value.themeData,
           initialRoute: SplashScreen.routeName,
           routes: {
-            SplashScreen.routeName: (context) => const SplashScreen(),
+            SplashScreen.routeName: (context) => SplashScreen(),
             SignInPage.routeName: (context) => SignInPage(),
             LoginPage.routeName: (context) => LoginPage(),
             HomePage.routeName: (context) => HomePage(),

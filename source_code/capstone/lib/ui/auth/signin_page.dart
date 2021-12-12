@@ -1,12 +1,12 @@
 import 'package:capstone/common/navigation.dart';
 import 'package:capstone/provider/auth_provider.dart';
-import 'package:capstone/ui/dashboard_page.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPage extends StatefulWidget {
   static const routeName = '/sign_page';
@@ -17,8 +17,10 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   bool _showPassword = true;
   late AuthProvider stateProvider;
+  bool isLogin = false;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
   void _togglevisibillity() {
     setState(() {
       _showPassword = !_showPassword;
@@ -33,16 +35,21 @@ class _SignInPageState extends State<SignInPage> {
   Widget _buildRegister(BuildContext context) {
     return Consumer<AuthProvider>(builder: (context, state, _) {
       stateProvider = state;
-      if (state.state == ResultState.loading) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (state.state == ResultState.Hasdata) {
+      isLoginyes();
+      if (isLogin) {
         return _toDashboard(context, state.isLogin);
-      } else if (state.state == ResultState.Nodata) {
-        return _buildList(context);
-      } else if (state.state == ResultState.Error) {
-        return _buildList(context);
       } else {
-        return _buildList(context);
+        if (state.state == ResultState.loading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state.state == ResultState.Hasdata) {
+          return _toDashboard(context, state.isLogin);
+        } else if (state.state == ResultState.Nodata) {
+          return _buildList(context);
+        } else if (state.state == ResultState.Error) {
+          return _buildList(context);
+        } else {
+          return _buildList(context);
+        }
       }
     });
   }
@@ -56,7 +63,6 @@ class _SignInPageState extends State<SignInPage> {
     }
 
     moveDashboard();
-
     return const Center(child: CircularProgressIndicator());
   }
 
@@ -65,12 +71,23 @@ class _SignInPageState extends State<SignInPage> {
       color: Colors.white,
       child: Center(
         child: Container(
-          height: 200,
+          height: 250,
           padding: EdgeInsets.only(left: 10.0, right: 10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
+              TextField(
+                controller: _nameController,
+                keyboardType: TextInputType.name,
+                autofocus: false,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32)),
+                    hintText: 'Enter Your Name',
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 20)),
+              ),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -166,7 +183,13 @@ class _SignInPageState extends State<SignInPage> {
 
   void _register() {
     var order = stateProvider.createUser(
-        _emailController.text, _passwordController.text);
-    print(order);
+        _emailController.text, _passwordController.text, _nameController.text);
+  }
+
+  void isLoginyes() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLogin = prefs.getBool("ISLOGIN") ?? false;
+    });
   }
 }

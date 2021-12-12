@@ -1,12 +1,12 @@
 import 'package:capstone/common/navigation.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
-import 'package:capstone/ui/dashboard_page.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login_page';
@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _showPassword = true;
-
+  bool isLogin = false;
   late AuthProvider stateProvider;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -34,16 +34,21 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildLogin(BuildContext context) {
     return Consumer<AuthProvider>(builder: (context, state, _) {
       stateProvider = state;
-      if (state.state == ResultState.loading) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (state.state == ResultState.Hasdata) {
+      isLoginyes();
+      if (isLogin) {
         return _toDashboard(context, state.isLogin);
-      } else if (state.state == ResultState.Nodata) {
-        return _buildPage(context);
-      } else if (state.state == ResultState.Error) {
-        return _buildPage(context);
       } else {
-        return _buildPage(context);
+        if (state.state == ResultState.loading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state.state == ResultState.Hasdata) {
+          return _toDashboard(context, state.isLogin);
+        } else if (state.state == ResultState.Nodata) {
+          return _buildPage(context);
+        } else if (state.state == ResultState.Error) {
+          return _buildPage(context);
+        } else {
+          return _buildPage(context);
+        }
       }
     });
   }
@@ -126,7 +131,8 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 child: TextButton(
                     onPressed: () {
-                      Navigation.intent(SignInPage.routeName);
+                      Navigator.pushReplacementNamed(
+                          context, SignInPage.routeName);
                     },
                     child: Text(
                       "Belum daftar",
@@ -173,19 +179,11 @@ class _LoginPageState extends State<LoginPage> {
         _emailController.text, _passwordController.text);
     print(order);
   }
-}
 
-      // showDialog(
-      //                   context: context,
-      //                   builder: (context) => AlertDialog(
-      //                     title: Text("Error"),
-      //                     content: Text(result.message),
-      //                     actions: <Widget>[
-      //                       FlatButton(
-      //                         onPressed: () {
-      //                           Navigator.pop(context);
-      //                         },
-      //                         child: Text("OK"),
-      //                       )
-      //                     ],
-      //                   ));
+  void isLoginyes() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLogin = prefs.getBool("ISLOGIN") ?? false;
+    });
+  }
+}
