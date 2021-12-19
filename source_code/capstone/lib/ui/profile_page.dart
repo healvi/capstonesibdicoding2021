@@ -30,7 +30,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   return SettingsPage();
                 }));
               },
-              icon: const Icon(Icons.settings, color: Colors.white))
+              icon: const Icon(Icons.settings, color: Colors.white)),
+          IconButton(
+              onPressed: () {
+                _logout();
+              },
+              icon: const Icon(Icons.power_off, color: Colors.red))
         ],
       ),
       body: _buildList(context),
@@ -54,4 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
       iosBuilder: _buildIos,
     );
   }
+
+  void _logout() {}
 }

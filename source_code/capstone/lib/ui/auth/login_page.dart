@@ -1,12 +1,13 @@
 import 'package:capstone/common/navigation.dart';
 import 'package:capstone/provider/auth_provider.dart';
+import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login_page';
@@ -16,7 +17,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _showPassword = true;
-  bool isLogin = false;
+  final auth = FirebaseAuth.instance;
   late AuthProvider stateProvider;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -34,14 +35,13 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildLogin(BuildContext context) {
     return Consumer<AuthProvider>(builder: (context, state, _) {
       stateProvider = state;
-      isLoginyes();
-      if (isLogin) {
-        return _toDashboard(context, state.isLogin);
+      if (auth.currentUser != null) {
+        return _toDashboard(context);
       } else {
         if (state.state == ResultState.loading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state.state == ResultState.Hasdata) {
-          return _toDashboard(context, state.isLogin);
+          return _toDashboard(context);
         } else if (state.state == ResultState.Nodata) {
           return _buildPage(context);
         } else if (state.state == ResultState.Error) {
@@ -53,16 +53,16 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Widget _toDashboard(BuildContext context, bool isLogin) {
-    final int _delay = 1;
+  Widget _toDashboard(BuildContext context) {
+    const int _delay = 1;
     moveDashboard() {
-      Future.delayed(Duration(seconds: _delay)).then((value) {
-        Navigator.pushReplacementNamed(context, HomePage.routeName);
+      Future.delayed(const Duration(seconds: _delay)).then((value) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, HomePage.routeName, (route) => false);
       });
     }
 
     moveDashboard();
-
     return const Center(child: CircularProgressIndicator());
   }
 
@@ -131,8 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 child: TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, SignInPage.routeName);
+                      Navigation.intent(SignInPage.routeName);
                     },
                     child: Text(
                       "Belum daftar",
@@ -178,12 +177,5 @@ class _LoginPageState extends State<LoginPage> {
     var order = stateProvider.loginUser(
         _emailController.text, _passwordController.text);
     print(order);
-  }
-
-  void isLoginyes() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLogin = prefs.getBool("ISLOGIN") ?? false;
-    });
   }
 }

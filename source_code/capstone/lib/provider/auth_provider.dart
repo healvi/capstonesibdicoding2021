@@ -1,10 +1,8 @@
+import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/utils/auth_result.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-enum ResultState { loading, Nodata, Hasdata, Error }
 
 class AuthProvider extends ChangeNotifier {
   late final String email;
@@ -19,7 +17,6 @@ class AuthProvider extends ChangeNotifier {
   late AuthResult _result;
   AuthResult get result => _result;
   FirebaseAuth auth = FirebaseAuth.instance;
-  bool isLogin = false;
   late ResultState _state;
   ResultState get state => _state;
 
@@ -27,20 +24,25 @@ class AuthProvider extends ChangeNotifier {
     try {
       _state = ResultState.loading;
       final hasil = (await auth.createUserWithEmailAndPassword(
-              email: email, password: pass))
+        email: email,
+        password: pass,
+      ))
           .user;
-      DatabaseReference ref = FirebaseDatabase.instance.ref();
-      ref
-          .child("users")
-          .push()
-          .set({"name": name, "Minat": "FLutter", "images": "user.png"});
-      isLogin = true;
-      isLoginyes();
+      if (auth.currentUser != null) {
+        auth.currentUser!.updateDisplayName(name);
+      }
+      var userUid = hasil!.uid;
+      DatabaseReference ref = FirebaseDatabase.instance.ref("users/$userUid");
+      ref.set({
+        "email": email,
+        "name": name,
+        "minat": "FLutter",
+        "images": "user.png"
+      });
       _state = ResultState.Hasdata;
       notifyListeners();
-      return AuthResult(user: hasil!, message: "success");
+      return _result = AuthResult(user: hasil, message: "success");
     } on FirebaseAuthException catch (e) {
-      isLogin = false;
       _state = ResultState.Error;
       notifyListeners();
       return e.toString();
@@ -53,14 +55,10 @@ class AuthProvider extends ChangeNotifier {
       final hasil =
           (await auth.signInWithEmailAndPassword(email: email, password: pass))
               .user;
-
-      isLogin = true;
-      isLoginyes();
       _state = ResultState.Hasdata;
       notifyListeners();
-      return AuthResult(user: hasil!, message: "success");
+      return _result = AuthResult(user: hasil!, message: "success");
     } on FirebaseAuthException catch (e) {
-      isLogin = false;
       _state = ResultState.Error;
       notifyListeners();
       return e.toString();
@@ -69,14 +67,5 @@ class AuthProvider extends ChangeNotifier {
 
   void signOut() {
     auth.signOut();
-    isLogin = false;
-    isLoginyes();
-  }
-
-  void isLoginyes() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool("ISLOGIN", isLogin);
-    prefs.setString("email", email);
-    prefs.setString("pass", pass);
   }
 }

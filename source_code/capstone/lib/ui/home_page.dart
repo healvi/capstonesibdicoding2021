@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     ),
     BottomNavigationBarItem(
       icon: Icon(Platform.isIOS ? CupertinoIcons.news : Icons.public),
-      label: "Events",
+      label: "Find",
     ),
     BottomNavigationBarItem(
       icon:
