@@ -1,4 +1,3 @@
-import 'package:capstone/data/firebase/firebase_services.dart';
 import 'package:capstone/data/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,49 +7,42 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum ResultState { loading, Nodata, Hasdata, Error }
 
-class UserProviderFirebase extends ChangeNotifier {
-  final FirebaseServicesa firebaseServices;
-  UserProviderFirebase({required this.firebaseServices}) {
-    getUser();
-  }
-
+class ImageProviderFirebase extends ChangeNotifier {
   late final String url;
+  ImageProviderFirebase({required this.url}) {
+    getUser(url);
+  }
   final auth = FirebaseAuth.instance;
   late UserModel resultUser;
   UserModel get result => resultUser;
   late ResultState _state;
   ResultState get state => _state;
 
-  Future<dynamic> getUser() async {
+  Future<dynamic> getUser(url) async {
     FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
-    var uid = auth.currentUser!.uid;
     firebase_storage.FirebaseStorage storage =
         firebase_storage.FirebaseStorage.instance;
-    List<TugasList> listTugas = [];
     var firebaseUser = FirebaseAuth.instance.currentUser;
-
     try {
-      print('$uid');
       _state = ResultState.loading;
-      UserModel reslutan = await firebaseServices.getUser(uid);
       String images = await firebase_storage.FirebaseStorage.instance
           .ref()
           .child('profile')
-          .child("${reslutan.images}")
+          .child("$url")
           .getDownloadURL();
-      _state = ResultState.Hasdata;
       notifyListeners();
-      return resultUser = UserModel(
-          email: reslutan.email,
-          name: reslutan.name,
-          minat: reslutan.minat,
-          images: images,
-          tugaslist: reslutan.tugaslist);
+      return images;
     } on firebase_core.FirebaseException catch (e) {
       _state = ResultState.Error;
       String defaultImage = 'user.png';
+      String images = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('profile')
+          .child("$defaultImage ")
+          .getDownloadURL();
+
       notifyListeners();
-      return "";
+      return images;
     }
   }
 }

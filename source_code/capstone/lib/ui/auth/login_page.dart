@@ -36,19 +36,10 @@ class _LoginPageState extends State<LoginPage> {
     return Consumer<AuthProvider>(builder: (context, state, _) {
       stateProvider = state;
       if (auth.currentUser != null) {
+        print("STill Login");
         return _toDashboard(context);
       } else {
-        if (state.state == ResultState.loading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state.state == ResultState.Hasdata) {
-          return _toDashboard(context);
-        } else if (state.state == ResultState.Nodata) {
-          return _buildPage(context);
-        } else if (state.state == ResultState.Error) {
-          return _buildPage(context);
-        } else {
-          return _buildPage(context);
-        }
+        return _buildPage(context);
       }
     });
   }

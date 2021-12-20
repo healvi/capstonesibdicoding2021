@@ -43,6 +43,7 @@ class _DashboardPageState extends State<DashboardPage> {
       } else if (state.state == ResultState.Hasdata) {
         UserModel user = state.resultUser;
         return _displayUserFirebase(context, user);
+        // return _displayUserDummy(context);
       } else if (state.state == ResultState.Nodata) {
         return _displayUserDummy(context);
       } else if (state.state == ResultState.Error) {
@@ -146,7 +147,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    '${numberList[index]}',
+                                    '${user.tugaslist[index].tugasname}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                     ),
@@ -155,7 +156,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    '${numberList[index]}',
+                                    '${user.tugaslist[index].tugasdateline}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                     ),
@@ -164,7 +165,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               ]),
                         );
                       },
-                      itemCount: numberList.length,
+                      itemCount: user.tugaslist.length,
                     ))
               ]),
         ),

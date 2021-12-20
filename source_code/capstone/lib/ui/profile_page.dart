@@ -1,5 +1,7 @@
+import 'package:capstone/ui/auth/login_page.dart';
 import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -60,5 +63,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _logout() {}
+  void _logout() async {
+    await auth.signOut().then((value) => {
+          Navigator.pushNamedAndRemoveUntil(
+              context, LoginPage.routeName, (route) => false)
+        });
+  }
 }

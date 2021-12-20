@@ -1,4 +1,5 @@
 import 'package:capstone/common/navigation.dart';
+import 'package:capstone/data/firebase/firebase_services.dart';
 import 'package:capstone/preferences/preferences_helper.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/provider/user_provider.dart';
@@ -52,7 +53,8 @@ class _MyAppState extends State<MyApp> {
             create: (_) => AuthProvider(email: email, pass: pass, name: name),
           ),
           ChangeNotifierProvider(
-            create: (_) => UserProviderFirebase(),
+            create: (_) =>
+                UserProviderFirebase(firebaseServices: FirebaseServicesa()),
           ),
           ChangeNotifierProvider(
             create: (_) => PreferencesProvider(

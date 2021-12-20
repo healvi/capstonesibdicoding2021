@@ -1,8 +1,9 @@
 import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/utils/auth_result.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class AuthProvider extends ChangeNotifier {
   late final String email;
@@ -17,6 +18,7 @@ class AuthProvider extends ChangeNotifier {
   late AuthResult _result;
   AuthResult get result => _result;
   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
   late ResultState _state;
   ResultState get state => _state;
 
@@ -31,14 +33,19 @@ class AuthProvider extends ChangeNotifier {
       if (auth.currentUser != null) {
         auth.currentUser!.updateDisplayName(name);
       }
+      var timestamp = DateTime(2022, 9, 7, 17, 30);
       var userUid = hasil!.uid;
-      DatabaseReference ref = FirebaseDatabase.instance.ref("users/$userUid");
-      ref.set({
-        "email": email,
+      firestoreInstance.collection("users").doc(userUid).set({
         "name": name,
+        "email": email,
         "minat": "FLutter",
-        "images": "user.png"
+        "images": "user.png",
+        "Tugas": [
+          {"name": "tugas 1", "dateline": Timestamp.fromDate(timestamp)},
+          {"name": "tugas 2", "dateline": Timestamp.fromDate(timestamp)}
+        ]
       });
+
       _state = ResultState.Hasdata;
       notifyListeners();
       return _result = AuthResult(user: hasil, message: "success");
