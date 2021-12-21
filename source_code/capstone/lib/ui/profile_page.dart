@@ -1,9 +1,13 @@
+import 'package:capstone/data/model/user_model.dart';
+import 'package:capstone/provider/auth_provider.dart';
+import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/ui/auth/login_page.dart';
 import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   static const routeName = '/profile_page';
@@ -19,7 +23,33 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildList(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
+    return Consumer<AuthProvider>(builder: (context, state, _) {
+      if (auth.currentUser != null) {
+        return _dasboardPage(
+          context,
+          auth.currentUser!.uid,
+        );
+      } else {
+        return const Center(child: CircularProgressIndicator());
+      }
+    });
+  }
+
+  Widget _dasboardPage(BuildContext context, String uid) {
+    return Consumer<UserProviderFirebase>(builder: (context, state, _) {
+      if (state.state == ResultState.loading) {
+        return _displayUserDummy(context);
+      } else if (state.state == ResultState.Hasdata) {
+        UserModel user = state.resultUser;
+        return _displayUserFirebase(context, user);
+      } else if (state.state == ResultState.Nodata) {
+        return _displayUserDummy(context);
+      } else if (state.state == ResultState.Error) {
+        return _displayUserDummy(context);
+      } else {
+        return _displayUserDummy(context);
+      }
+    });
   }
 
   Widget _buildAndroid(BuildContext context) {
@@ -68,5 +98,111 @@ class _ProfilePageState extends State<ProfilePage> {
           Navigator.pushNamedAndRemoveUntil(
               context, LoginPage.routeName, (route) => false)
         });
+  }
+
+  Widget _displayUserFirebase(BuildContext context, UserModel user) {
+    return SafeArea(
+      child: Material(
+        child: Container(
+          color: Colors.blue[100],
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(bottom: 4.0),
+                  height: 300.0,
+                  color: Colors.blue,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Center(
+                        child: GestureDetector(
+                          child: FadeInImage(
+                            width: 150,
+                            height: 150,
+                            placeholder:
+                                const AssetImage('assets/images/user.png'),
+                            image: NetworkImage(user.images),
+                            fit: BoxFit.cover,
+                          ),
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("chang foto prfile"),
+                              duration: Duration(seconds: 1),
+                            ));
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 24.0),
+                        child: Text(user.name.toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(top: 8.0, left: 12, right: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 20)),
+                                onPressed: () {},
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Edit Profile",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                  ),
+                                ),
+                              )),
+                          Container(
+                              margin: EdgeInsets.only(top: 12),
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 20)),
+                                onPressed: () {},
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Bantuan",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      ),
+                    ))
+              ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _displayUserDummy(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
   }
 }

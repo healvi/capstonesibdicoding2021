@@ -15,7 +15,6 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  late UserProviderFirebase userProvider;
   final auth = FirebaseAuth.instance;
   @override
   void initState() {
@@ -37,7 +36,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _dasboardPage(BuildContext context, String uid) {
     return Consumer<UserProviderFirebase>(builder: (context, state, _) {
-      userProvider = state;
       if (state.state == ResultState.loading) {
         return _displayUserDummy(context);
       } else if (state.state == ResultState.Hasdata) {
@@ -57,7 +55,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SIB App'),
+        title: const Text('SIB App'),
         actions: [
           IconButton(
               onPressed: () {
@@ -91,7 +89,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _displayUserFirebase(BuildContext context, UserModel user) {
-    final List<int> numberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     return SafeArea(
       child: Material(
         child: Container(

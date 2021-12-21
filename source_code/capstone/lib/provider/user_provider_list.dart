@@ -1,18 +1,17 @@
 import 'package:capstone/data/firebase/firebase_services.dart';
 import 'package:capstone/data/model/user_model.dart';
 import 'package:capstone/data/model/userlist_model.dart';
+import 'package:capstone/provider/image_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum ResultState { loading, Nodata, Hasdata, Error }
-
-class UserProviderFirebase extends ChangeNotifier {
+class UserProviderListFirebase extends ChangeNotifier {
   final FirebaseServicesa firebaseServices;
-  UserProviderFirebase({required this.firebaseServices}) {
-    getUser();
+  UserProviderListFirebase({required this.firebaseServices}) {
+    getUserList();
   }
 
   late final String url;
@@ -25,7 +24,8 @@ class UserProviderFirebase extends ChangeNotifier {
   late ResultState _state;
   ResultState get state => _state;
   List<TugasList> listTugas = [];
-  Future<dynamic> getUser() async {
+
+  Future<dynamic> getUserList() async {
     FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
     var uid = auth.currentUser!.uid;
     firebase_storage.FirebaseStorage storage =
@@ -34,30 +34,15 @@ class UserProviderFirebase extends ChangeNotifier {
 
     try {
       _state = ResultState.loading;
-      UserModel reslutan = await firebaseServices.getUser(uid);
-      String images = await firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child('profile')
-          .child(reslutan.images)
-          .getDownloadURL();
+      UserModelList resultan = await firebaseServices.getUserList();
       _state = ResultState.Hasdata;
       notifyListeners();
-      return resultUser = UserModel(
-          email: reslutan.email,
-          name: reslutan.name,
-          minat: reslutan.minat,
-          images: images,
-          tugaslist: reslutan.tugaslist);
+      return resultUserList = resultan;
     } on firebase_core.FirebaseException catch (e) {
       _state = ResultState.Error;
       String defaultImage = 'user.png';
       notifyListeners();
-      return resultUser = UserModel(
-          email: "",
-          name: "",
-          minat: "",
-          images: defaultImage,
-          tugaslist: listTugas);
+      return "";
     }
   }
 }

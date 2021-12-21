@@ -4,6 +4,7 @@ import 'package:capstone/preferences/preferences_helper.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/provider/preferences_provider.dart';
+import 'package:capstone/provider/user_provider_list.dart';
 import 'package:capstone/ui/auth/login_page.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
 import 'package:capstone/ui/event_page.dart';
@@ -55,6 +56,10 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(
             create: (_) =>
                 UserProviderFirebase(firebaseServices: FirebaseServicesa()),
+          ),
+          ChangeNotifierProvider(
+            create: (_) =>
+                UserProviderListFirebase(firebaseServices: FirebaseServicesa()),
           ),
           ChangeNotifierProvider(
             create: (_) => PreferencesProvider(
