@@ -1,12 +1,17 @@
+import 'dart:io';
+
+import 'package:capstone/common/navigation.dart';
 import 'package:capstone/data/model/user_model.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/ui/auth/login_page.dart';
+import 'package:capstone/ui/edit_profile.dart';
 import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -17,6 +22,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   FirebaseAuth auth = FirebaseAuth.instance;
+  final picker = ImagePicker();
   @override
   void initState() {
     super.initState();
@@ -128,6 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             fit: BoxFit.cover,
                           ),
                           onTap: () {
+                            _changeFile();
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text("chang foto prfile"),
                               duration: Duration(seconds: 1),
@@ -163,7 +170,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         borderRadius: BorderRadius.circular(5)),
                                     padding: EdgeInsets.symmetric(
                                         vertical: 15, horizontal: 20)),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigation.navigateData(
+                                      EditProfileInPage.routeName, user);
+                                },
                                 child: Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
@@ -204,5 +214,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _displayUserDummy(BuildContext context) {
     return const Center(child: CircularProgressIndicator());
+  }
+
+  void _changeFile() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File _imageFile = File(pickedFile.path);
+    } else {
+      File _imageFile = File(pickedFile!.path);
+    }
   }
 }

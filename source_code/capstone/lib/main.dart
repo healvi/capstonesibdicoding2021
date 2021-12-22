@@ -1,5 +1,6 @@
 import 'package:capstone/common/navigation.dart';
 import 'package:capstone/data/firebase/firebase_services.dart';
+import 'package:capstone/data/model/user_model.dart';
 import 'package:capstone/preferences/preferences_helper.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/provider/user_provider.dart';
@@ -7,6 +8,7 @@ import 'package:capstone/provider/preferences_provider.dart';
 import 'package:capstone/provider/user_provider_list.dart';
 import 'package:capstone/ui/auth/login_page.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
+import 'package:capstone/ui/edit_profile.dart';
 import 'package:capstone/ui/event_page.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/ui/profile_page.dart';
@@ -82,6 +84,8 @@ class _MyAppState extends State<MyApp> {
               HomePage.routeName: (context) => HomePage(),
               EventPage.routeName: (context) => EventPage(),
               ProfilePage.routeName: (context) => ProfilePage(),
+              EditProfileInPage.routeName: (context) => EditProfileInPage(
+                  ModalRoute.of(context)?.settings.arguments as UserModel),
             },
           );
         }));

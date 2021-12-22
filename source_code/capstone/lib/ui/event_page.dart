@@ -1,3 +1,5 @@
+import 'package:capstone/data/model/user.dart';
+import 'package:capstone/data/model/user_model.dart';
 import 'package:capstone/data/model/userlist_model.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/provider/image_provider.dart';
@@ -11,11 +13,20 @@ import 'package:provider/provider.dart';
 
 class EventPage extends StatefulWidget {
   static const routeName = '/event_page';
+
   @override
   _EventPageState createState() => _EventPageState();
 }
 
 class _EventPageState extends State<EventPage> {
+  bool _showPassword = true;
+
+  void _togglevisibillity() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
+
   final auth = FirebaseAuth.instance;
   @override
   void initState() {
@@ -100,10 +111,7 @@ class _EventPageState extends State<EventPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(user.user[index].name),
-                          duration: Duration(seconds: 1),
-                        ));
+                        _showModal(context, user.user[index] as Usera);
                       },
                       child: Container(
                         margin: EdgeInsets.only(left: 8, right: 8, top: 4.0),
@@ -165,5 +173,110 @@ class _EventPageState extends State<EventPage> {
 
   Widget _displayUserDummy(BuildContext context) {
     return const Center(child: CircularProgressIndicator());
+  }
+
+  void _showModal(BuildContext context, Usera user) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            color: Colors.blue[200],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.topRight,
+                    margin: const EdgeInsets.only(top: 35, left: 15),
+                    child: RawMaterialButton(
+                      child: Icon(
+                          const IconData(0xe16a, fontFamily: 'MaterialIcons'),
+                          color: Colors.white),
+                      fillColor: Colors.red,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      padding: EdgeInsets.all(0),
+                      shape: CircleBorder(),
+                    )),
+                Center(
+                  child: FadeInImage(
+                    width: 150,
+                    height: 150,
+                    placeholder: const AssetImage('assets/images/user.png'),
+                    image: NetworkImage(user.images),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[200],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Container(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("NAME",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                          )),
+                      Container(
+                          color: Colors.white,
+                          alignment: Alignment.topLeft,
+                          margin: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 5),
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 20),
+                          child: Text(user.name.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ))),
+                      Text("MINAT",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                          )),
+                      Container(
+                          color: Colors.white,
+                          alignment: Alignment.topLeft,
+                          margin: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 5),
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 20),
+                          child: Text(user.minat.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ))),
+                      Text("EMAIL",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                          )),
+                      Container(
+                          color: Colors.white,
+                          alignment: Alignment.topLeft,
+                          margin: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 5),
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 20),
+                          child: Text(user.email.toLowerCase(),
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ))),
+                    ],
+                  )),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

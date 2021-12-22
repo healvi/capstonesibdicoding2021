@@ -1,3 +1,4 @@
+import 'package:capstone/data/model/user.dart';
 import 'package:capstone/data/model/user_model.dart';
 import 'package:capstone/data/model/userlist_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,14 +12,27 @@ class FirebaseServicesa {
     return UserModel.fromData(userData.data()!);
   }
 
+  Future<UserModel> updateUser(String uid, Usera user) async {
+    final _usersCollectionReference = firestoreInstance.collection("users");
+    var update = {
+      'name': user.name,
+      'minat': user.minat,
+    };
+    return _usersCollectionReference
+        .doc(uid)
+        .update(update)
+        .then((value) => getUser(uid))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
   Future<UserModelList> getUserList() async {
-    List<User> searchUserResult = [];
+    List<Usera> searchUserResult = [];
     final _usersCollectionReference = firestoreInstance.collection("users");
     firebase_storage.FirebaseStorage storage =
         firebase_storage.FirebaseStorage.instance;
     var userData = await _usersCollectionReference.get().then((value) => {
           value.docs.forEach((document) async {
-            User users = User.fromData(document.data());
+            Usera users = Usera.fromData(document.data());
             String images = await firebase_storage.FirebaseStorage.instance
                 .ref()
                 .child('profile')
