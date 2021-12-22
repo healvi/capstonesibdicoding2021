@@ -93,8 +93,7 @@ class _EventPageState extends State<UserListPage> {
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
                         onTap: () {
-                          _showModal(
-                              context, snapshot.data!.docs[index] as Usera);
+                          _showModal(context, snapshot.data!.docs[index]);
                         },
                         child: Container(
                           margin: EdgeInsets.only(left: 8, right: 8, top: 4.0),
@@ -163,7 +162,7 @@ class _EventPageState extends State<UserListPage> {
     return const Center(child: CircularProgressIndicator());
   }
 
-  void _showModal(BuildContext context, Usera user) {
+  void _showModal(BuildContext context, user) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -192,7 +191,7 @@ class _EventPageState extends State<UserListPage> {
                     width: 150,
                     height: 150,
                     placeholder: const AssetImage('assets/images/user.png'),
-                    image: NetworkImage(user.images),
+                    image: NetworkImage(user['images']),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -220,7 +219,7 @@ class _EventPageState extends State<UserListPage> {
                               top: 10, bottom: 10, left: 5),
                           padding: const EdgeInsets.only(
                               top: 10, bottom: 10, left: 20),
-                          child: Text(user.name.toUpperCase(),
+                          child: Text(user['name'].toUpperCase(),
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
@@ -237,7 +236,7 @@ class _EventPageState extends State<UserListPage> {
                               top: 10, bottom: 10, left: 5),
                           padding: const EdgeInsets.only(
                               top: 10, bottom: 10, left: 20),
-                          child: Text(user.minat.toUpperCase(),
+                          child: Text(user['minat'].toUpperCase(),
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
@@ -254,7 +253,7 @@ class _EventPageState extends State<UserListPage> {
                               top: 10, bottom: 10, left: 5),
                           padding: const EdgeInsets.only(
                               top: 10, bottom: 10, left: 20),
-                          child: Text(user.email.toLowerCase(),
+                          child: Text(user['email'].toLowerCase(),
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
