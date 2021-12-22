@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:capstone/ui/dashboard_page.dart';
 import 'package:capstone/ui/event_page.dart';
 import 'package:capstone/ui/profile_page.dart';
+import 'package:capstone/ui/user_list_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   int _bottomNavIndex = 0;
   final List<Widget> _listWidget = [
     DashboardPage(),
-    EventPage(),
+    UserListPage(),
     ProfilePage()
   ];
 

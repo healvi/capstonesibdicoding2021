@@ -13,6 +13,7 @@ import 'package:capstone/ui/event_page.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/ui/profile_page.dart';
 import 'package:capstone/ui/splash_screen.dart';
+import 'package:capstone/ui/user_list_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,7 @@ class _MyAppState extends State<MyApp> {
               SignInPage.routeName: (context) => SignInPage(),
               LoginPage.routeName: (context) => LoginPage(),
               HomePage.routeName: (context) => HomePage(),
-              EventPage.routeName: (context) => EventPage(),
+              UserListPage.routeName: (context) => UserListPage(),
               ProfilePage.routeName: (context) => ProfilePage(),
               EditProfileInPage.routeName: (context) => EditProfileInPage(
                   ModalRoute.of(context)?.settings.arguments as UserModel),

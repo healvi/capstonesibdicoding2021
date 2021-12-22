@@ -34,9 +34,10 @@ class UserProviderListFirebase extends ChangeNotifier {
 
     try {
       _state = ResultState.loading;
-      UserModelList resultan = await firebaseServices.getUserList();
-      _state = ResultState.Hasdata;
-      notifyListeners();
+      UserModelList resultan = await firebaseServices
+          .getUserList()
+          .whenComplete(
+              () => {_state = ResultState.Hasdata, notifyListeners()});
       return resultUserList = resultan;
     } on firebase_core.FirebaseException catch (e) {
       _state = ResultState.Error;

@@ -32,18 +32,18 @@ class UserProviderFirebase extends ChangeNotifier {
     try {
       _state = ResultState.loading;
       UserModel reslutan = await firebaseServices.getUser(uid);
-      String images = await firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child('profile')
-          .child(reslutan.images)
-          .getDownloadURL();
+      // String images = await firebase_storage.FirebaseStorage.instance
+      //     .ref()
+      //     .child('profile')
+      //     .child(reslutan.images)
+      //     .getDownloadURL();
       _state = ResultState.Hasdata;
       notifyListeners();
       return resultUser = UserModel(
           email: reslutan.email,
           name: reslutan.name,
           minat: reslutan.minat,
-          images: images,
+          images: reslutan.images,
           tugaslist: reslutan.tugaslist);
     } on firebase_core.FirebaseException catch (e) {
       _state = ResultState.Error;

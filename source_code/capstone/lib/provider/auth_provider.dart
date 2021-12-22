@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AuthProvider extends ChangeNotifier {
   late final String email;
@@ -23,6 +24,8 @@ class AuthProvider extends ChangeNotifier {
   ResultState get state => _state;
 
   Future<dynamic> createUser(email, pass, name) async {
+    firebase_storage.FirebaseStorage storage =
+        firebase_storage.FirebaseStorage.instance;
     try {
       _state = ResultState.loading;
       final hasil = (await auth.createUserWithEmailAndPassword(
@@ -35,11 +38,19 @@ class AuthProvider extends ChangeNotifier {
       }
       var timestamp = DateTime(2022, 9, 7, 17, 30);
       var userUid = hasil!.uid;
+
+      String images = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('profile')
+          .child("user.png")
+          .getDownloadURL();
+      notifyListeners();
+
       firestoreInstance.collection("users").doc(userUid).set({
         "name": name,
         "email": email,
         "minat": "FLutter",
-        "images": "user.png",
+        "images": images,
         "Tugas": [
           {"name": "tugas 1", "dateline": Timestamp.fromDate(timestamp)},
           {"name": "tugas 2", "dateline": Timestamp.fromDate(timestamp)}

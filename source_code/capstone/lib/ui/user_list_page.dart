@@ -1,24 +1,21 @@
 import 'package:capstone/data/model/user.dart';
-import 'package:capstone/data/model/user_model.dart';
-import 'package:capstone/data/model/userlist_model.dart';
 import 'package:capstone/provider/auth_provider.dart';
-import 'package:capstone/provider/image_provider.dart';
-import 'package:capstone/provider/user_provider_list.dart';
 import 'package:capstone/ui/settings_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EventPage extends StatefulWidget {
-  static const routeName = '/event_page';
+class UserListPage extends StatefulWidget {
+  static const routeName = '/user_list_page';
 
   @override
   _EventPageState createState() => _EventPageState();
 }
 
-class _EventPageState extends State<EventPage> {
+class _EventPageState extends State<UserListPage> {
   bool _showPassword = true;
 
   void _togglevisibillity() {
@@ -28,6 +25,7 @@ class _EventPageState extends State<EventPage> {
   }
 
   final auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   @override
   void initState() {
     super.initState();
@@ -36,28 +34,9 @@ class _EventPageState extends State<EventPage> {
   Widget _buildList(BuildContext context) {
     return Consumer<AuthProvider>(builder: (context, state, _) {
       if (auth.currentUser != null) {
-        return _dasboardPage(
-          context,
-          auth.currentUser!.uid,
-        );
+        return _displayUserFirebase(context);
       } else {
         return const Center(child: CircularProgressIndicator());
-      }
-    });
-  }
-
-  Widget _dasboardPage(BuildContext context, String uid) {
-    return Consumer<UserProviderListFirebase>(builder: (context, state, _) {
-      if (state.state == ResultState.loading) {
-        return _displayUserDummy(context);
-      } else if (state.state == ResultState.Hasdata) {
-        return _displayUserFirebase(context, state.resultUserList);
-      } else if (state.state == ResultState.Nodata) {
-        return _displayUserDummy(context);
-      } else if (state.state == ResultState.Error) {
-        return _displayUserDummy(context);
-      } else {
-        return _displayUserDummy(context);
       }
     });
   }
@@ -98,71 +77,84 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  Widget _displayUserFirebase(BuildContext context, UserModelList user) {
-    print(" data dsplay ${user.user}");
+  Widget _displayUserFirebase(BuildContext context) {
     return SafeArea(
-      child: Material(
-        child: Container(
-            padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0),
-            color: Colors.blue[100],
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    _showModal(context, user.user[index] as Usera);
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(left: 8, right: 8, top: 4.0),
-                    padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.blueAccent),
-                    ),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          FadeInImage(
-                            width: 40,
-                            height: 40,
-                            placeholder:
-                                const AssetImage('assets/images/user.png'),
-                            image: NetworkImage(user.user[index].images),
-                            fit: BoxFit.cover,
+      child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: _firestore.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Material(
+              child: Container(
+                  padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0),
+                  color: Colors.blue[100],
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          _showModal(
+                              context, snapshot.data!.docs[index] as Usera);
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(left: 8, right: 8, top: 4.0),
+                          padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                          height: 60.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.blueAccent),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 16.0, right: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    '${user.user[index].name.toUpperCase()}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                FadeInImage(
+                                  width: 40,
+                                  height: 40,
+                                  placeholder: const AssetImage(
+                                      'assets/images/user.png'),
+                                  image: NetworkImage(
+                                      snapshot.data!.docs[index]['images']),
+                                  fit: BoxFit.cover,
                                 ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    '${user.user[index].minat.toUpperCase()}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 16.0, right: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          '${snapshot.data!.docs[index]['name'].toUpperCase()}',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          '${snapshot.data!.docs[index]['minat'].toUpperCase()}',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ]),
-                  ),
-                );
-              },
-              itemCount: user.user.length,
-            )),
+                                )
+                              ]),
+                        ),
+                      );
+                    },
+                    itemCount: snapshot.data!.docs.length,
+                  )),
+            );
+          }
+        },
       ),
     );
   }
