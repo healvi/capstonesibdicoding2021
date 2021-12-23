@@ -143,6 +143,7 @@ class _EventPageState extends State<UserListPage> {
                                               child: Text(
                                                 '${snapshot.data!.docs[index]['name'].toUpperCase()}',
                                                 style: const TextStyle(
+                                                  color: Colors.black,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -152,6 +153,7 @@ class _EventPageState extends State<UserListPage> {
                                               child: Text(
                                                 '${snapshot.data!.docs[index]['minat'].toUpperCase()}',
                                                 style: const TextStyle(
+                                                  color: Colors.black,
                                                   fontSize: 16,
                                                 ),
                                               ),

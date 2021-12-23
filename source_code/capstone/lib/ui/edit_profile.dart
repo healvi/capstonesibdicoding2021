@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:capstone/data/model/user.dart';
 import 'package:capstone/data/model/user_model.dart';
@@ -108,20 +109,37 @@ class _SignInPageState extends State<EditProfileInPage> {
                     controller: _nameController,
                     keyboardType: TextInputType.name,
                     autofocus: false,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                            borderRadius: BorderRadius.circular(32)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
                             borderRadius: BorderRadius.circular(32)),
                         hintText: 'Enter Your Name',
+                        hintStyle: TextStyle(
+                          color: Colors.black,
+                        ),
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 20, horizontal: 20)),
                   ),
                   SizedBox(height: 20),
                   TextFormField(
                     controller: _minatController,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
                     keyboardType: TextInputType.emailAddress,
                     autofocus: false,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                            borderRadius: BorderRadius.circular(32)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
                             borderRadius: BorderRadius.circular(32)),
                         hintText: 'Enter Your Minat',
                         contentPadding:

@@ -62,12 +62,18 @@ class _LoginPageState extends State<LoginPage> {
       color: Colors.white,
       child: Center(
         child: Container(
-          height: 250,
+          height: 450,
           padding: EdgeInsets.only(left: 10.0, right: 10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
+              Center(
+                  child: Container(
+                width: 150,
+                height: 150,
+                child: Image.asset("assets/images/sibbrand.png"),
+              )),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,

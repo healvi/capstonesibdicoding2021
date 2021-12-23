@@ -148,6 +148,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   child: Text(
                                     '${user.tugaslist[index].tugasname}',
                                     style: const TextStyle(
+                                      color: Colors.black,
                                       fontSize: 16,
                                     ),
                                   ),
@@ -157,6 +158,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   child: Text(
                                     '${user.tugaslist[index].tugasdateline}',
                                     style: const TextStyle(
+                                      color: Colors.black,
                                       fontSize: 16,
                                     ),
                                   ),
