@@ -14,8 +14,11 @@ class FirebaseServicesa {
     return UserModel.fromData(userData.data()!);
   }
 
-  Future<UserModelList> getUserList() async {
-    final _usersCollectionReference = firestoreInstance.collection("users");
+  Future<UserModelList> getUserList(String? email) async {
+    print(email);
+    final _usersCollectionReference = firestoreInstance
+        .collection("users")
+        .where('email', isNotEqualTo: email);
     var userData = await _usersCollectionReference.get();
     return UserModelList.fromJSON(userData.docs);
   }

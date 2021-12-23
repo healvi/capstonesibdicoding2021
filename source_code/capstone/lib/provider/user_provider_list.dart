@@ -30,12 +30,12 @@ class UserProviderListFirebase extends ChangeNotifier {
     var uid = auth.currentUser!.uid;
     firebase_storage.FirebaseStorage storage =
         firebase_storage.FirebaseStorage.instance;
-    var firebaseUser = FirebaseAuth.instance.currentUser;
+    var firebaseUser = FirebaseAuth.instance.currentUser!.email;
 
     try {
       _state = ResultState.loading;
       UserModelList resultan = await firebaseServices
-          .getUserList()
+          .getUserList(firebaseUser)
           .whenComplete(
               () => {_state = ResultState.Hasdata, notifyListeners()});
       return resultUserList = resultan;

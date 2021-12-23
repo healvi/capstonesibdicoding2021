@@ -80,7 +80,10 @@ class _EventPageState extends State<UserListPage> {
   Widget _displayUserFirebase(BuildContext context) {
     return SafeArea(
       child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: _firestore.collection('users').snapshots(),
+        stream: _firestore
+            .collection('users')
+            .where('email', isNotEqualTo: auth.currentUser!.email)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -89,68 +92,77 @@ class _EventPageState extends State<UserListPage> {
               child: Container(
                   padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0),
                   color: Colors.blue[100],
-                  child: ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          _showModal(context, snapshot.data!.docs[index]);
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(left: 8, right: 8, top: 4.0),
-                          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                          height: 60.0,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.blueAccent),
-                          ),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                FadeInImage(
-                                  width: 40,
-                                  height: 40,
-                                  placeholder: const AssetImage(
-                                      'assets/images/user.png'),
-                                  image: NetworkImage(
-                                      snapshot.data!.docs[index]['images']),
-                                  fit: BoxFit.cover,
+                  child: snapshot.data!.docs.isEmpty
+                      ? const Center(
+                          child: Text("Tidak Ada Data",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold)))
+                      : ListView.builder(
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                _showModal(context, snapshot.data!.docs[index]);
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    left: 8, right: 8, top: 4.0),
+                                padding:
+                                    EdgeInsets.only(left: 16.0, right: 16.0),
+                                height: 60.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.blueAccent),
                                 ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 16.0, right: 8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          '${snapshot.data!.docs[index]['name'].toUpperCase()}',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        ),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      FadeInImage(
+                                        width: 40,
+                                        height: 40,
+                                        placeholder: const AssetImage(
+                                            'assets/images/user.png'),
+                                        image: NetworkImage(snapshot
+                                            .data!.docs[index]['images']),
+                                        fit: BoxFit.cover,
                                       ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          '${snapshot.data!.docs[index]['minat'].toUpperCase()}',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                          ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 16.0, right: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                '${snapshot.data!.docs[index]['name'].toUpperCase()}',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                '${snapshot.data!.docs[index]['minat'].toUpperCase()}',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ]),
-                        ),
-                      );
-                    },
-                    itemCount: snapshot.data!.docs.length,
-                  )),
+                                      )
+                                    ]),
+                              ),
+                            );
+                          },
+                          itemCount: snapshot.data!.docs.length,
+                        )),
             );
           }
         },
