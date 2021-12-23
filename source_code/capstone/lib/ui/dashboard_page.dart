@@ -106,13 +106,15 @@ class _DashboardPageState extends State<DashboardPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Center(
-                        child: FadeInImage(
-                          width: 150,
-                          height: 150,
-                          placeholder:
-                              const AssetImage('assets/images/user.png'),
-                          image: NetworkImage(user.images),
-                          fit: BoxFit.cover,
+                        child: ClipOval(
+                          child: FadeInImage(
+                            width: 150,
+                            height: 150,
+                            placeholder:
+                                const AssetImage('assets/images/user.png'),
+                            image: NetworkImage(user.images),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       Padding(

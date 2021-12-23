@@ -87,13 +87,16 @@ class _SignInPageState extends State<EditProfileInPage> {
                               },
                             )
                           : GestureDetector(
-                              child: FadeInImage(
-                                width: 150,
-                                height: 150,
-                                placeholder:
-                                    const AssetImage('assets/images/user.png'),
-                                image: NetworkImage(widget._userDetail.images),
-                                fit: BoxFit.cover,
+                              child: ClipOval(
+                                child: FadeInImage(
+                                  width: 150,
+                                  height: 150,
+                                  placeholder: const AssetImage(
+                                      'assets/images/user.png'),
+                                  image:
+                                      NetworkImage(widget._userDetail.images),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               onTap: () {
                                 _changeFile();

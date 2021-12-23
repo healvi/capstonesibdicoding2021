@@ -118,14 +118,16 @@ class _EventPageState extends State<UserListPage> {
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      FadeInImage(
-                                        width: 40,
-                                        height: 40,
-                                        placeholder: const AssetImage(
-                                            'assets/images/user.png'),
-                                        image: NetworkImage(snapshot
-                                            .data!.docs[index]['images']),
-                                        fit: BoxFit.cover,
+                                      ClipOval(
+                                        child: FadeInImage(
+                                          width: 40,
+                                          height: 40,
+                                          placeholder: const AssetImage(
+                                              'assets/images/user.png'),
+                                          image: NetworkImage(snapshot
+                                              .data!.docs[index]['images']),
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(

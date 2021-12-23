@@ -137,13 +137,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           Center(
                             child: imagesLokal
                                 ? GestureDetector(
-                                    child: FadeInImage(
-                                      width: 150,
-                                      height: 150,
-                                      placeholder: const AssetImage(
-                                          'assets/images/user.png'),
-                                      image: NetworkImage(url),
-                                      fit: BoxFit.cover,
+                                    child: ClipOval(
+                                      child: FadeInImage(
+                                        width: 150,
+                                        height: 150,
+                                        placeholder: const AssetImage(
+                                            'assets/images/user.png'),
+                                        image: NetworkImage(url),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                     onTap: () {
                                       _changeFile();
@@ -155,13 +157,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                     },
                                   )
                                 : GestureDetector(
-                                    child: FadeInImage(
-                                      width: 150,
-                                      height: 150,
-                                      placeholder: const AssetImage(
-                                          'assets/images/user.png'),
-                                      image: NetworkImage(user.images),
-                                      fit: BoxFit.cover,
+                                    child: ClipOval(
+                                      child: FadeInImage(
+                                        width: 150,
+                                        height: 150,
+                                        placeholder: const AssetImage(
+                                            'assets/images/user.png'),
+                                        image: NetworkImage(user.images),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                     onTap: () {
                                       _changeFile();
