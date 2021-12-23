@@ -214,27 +214,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   )),
-                              Container(
-                                  margin: EdgeInsets.only(top: 12),
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 20)),
-                                    onPressed: () {},
-                                    child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        "Bantuan",
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.black),
-                                      ),
-                                    ),
-                                  )),
                             ],
                           ),
                         ))
