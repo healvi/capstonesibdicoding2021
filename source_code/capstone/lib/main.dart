@@ -9,7 +9,6 @@ import 'package:capstone/provider/user_provider_list.dart';
 import 'package:capstone/ui/auth/login_page.dart';
 import 'package:capstone/ui/auth/signin_page.dart';
 import 'package:capstone/ui/edit_profile.dart';
-import 'package:capstone/ui/event_page.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/ui/profile_page.dart';
 import 'package:capstone/ui/splash_screen.dart';

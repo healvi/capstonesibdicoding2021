@@ -1,9 +1,8 @@
-import 'package:capstone/provider/user_provider.dart';
+import 'package:capstone/provider/image_provider.dart';
 import 'package:capstone/utils/auth_result.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AuthProvider extends ChangeNotifier {

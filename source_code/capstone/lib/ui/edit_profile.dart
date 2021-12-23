@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class EditProfileInPage extends StatefulWidget {
   static const routeName = '/updateProfile_page';
@@ -23,8 +24,11 @@ class EditProfileInPage extends StatefulWidget {
 class _SignInPageState extends State<EditProfileInPage> {
   final auth = FirebaseAuth.instance;
   late UserProviderFirebase stateProvider;
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
   final picker = ImagePicker();
   String imageUrl = "";
+  var url = "";
   final TextEditingController _minatController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
@@ -63,23 +67,38 @@ class _SignInPageState extends State<EditProfileInPage> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: Center(
-                      child: GestureDetector(
-                        child: FadeInImage(
-                          width: 150,
-                          height: 150,
-                          placeholder:
-                              const AssetImage('assets/images/user.png'),
-                          image: NetworkImage(widget._userDetail.images),
-                          fit: BoxFit.cover,
-                        ),
-                        onTap: () {
-                          _changeFile();
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("chang foto prfile"),
-                            duration: Duration(seconds: 1),
-                          ));
-                        },
-                      ),
+                      child: url.isNotEmpty
+                          ? GestureDetector(
+                              child: FadeInImage(
+                                width: 150,
+                                height: 150,
+                                placeholder:
+                                    const AssetImage('assets/images/user.png'),
+                                image: NetworkImage(url),
+                                fit: BoxFit.cover,
+                              ),
+                              onTap: () {
+                                _changeFile();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Text("chang foto prfile"),
+                                  duration: Duration(seconds: 1),
+                                ));
+                              },
+                            )
+                          : GestureDetector(
+                              child: FadeInImage(
+                                width: 150,
+                                height: 150,
+                                placeholder:
+                                    const AssetImage('assets/images/user.png'),
+                                image: NetworkImage(widget._userDetail.images),
+                                fit: BoxFit.cover,
+                              ),
+                              onTap: () {
+                                _changeFile();
+                              },
+                            ),
                     ),
                   ),
                   TextFormField(
@@ -165,10 +184,38 @@ class _SignInPageState extends State<EditProfileInPage> {
 
   void _changeFile() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    firebase_storage.UploadTask uploadTask;
     if (pickedFile != null) {
       File _imageFile = File(pickedFile.path);
+      var reslutan = await firebase_storage.FirebaseStorage.instance
+          .ref('profile/${auth.currentUser!.uid}-imageprofile')
+          .putFile(_imageFile);
+      var taskSnapshot = await reslutan.metadata;
+      await _getImages(taskSnapshot!.name);
     } else {
       File _imageFile = File(pickedFile!.path);
+      var reslutan = await firebase_storage.FirebaseStorage.instance
+          .ref('profile/${auth.currentUser!.uid}-imageprofile')
+          .putFile(_imageFile);
+      var taskSnapshot = await reslutan.metadata;
+      await _getImages(taskSnapshot!.name);
     }
+  }
+
+  Future<void> _getImages(urls) async {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("chang foto prfile"),
+      duration: Duration(seconds: 5),
+    ));
+    String images = await firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('profile')
+        .child("$urls")
+        .getDownloadURL();
+    var user = Usera(email: '', name: '', minat: '', images: images);
+    await stateProvider.updateImage(user);
+    setState(() {
+      url = images;
+    });
   }
 }

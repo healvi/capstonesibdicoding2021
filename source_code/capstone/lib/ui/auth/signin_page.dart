@@ -1,13 +1,12 @@
 import 'package:capstone/provider/auth_provider.dart';
-import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/ui/home_page.dart';
 import 'package:capstone/ui/settings_page.dart';
+import 'package:capstone/utils/result.dart';
 import 'package:capstone/widgets/platform_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPage extends StatefulWidget {
   static const routeName = '/sign_page';

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:capstone/common/navigation.dart';
+import 'package:capstone/data/model/user.dart';
 import 'package:capstone/data/model/user_model.dart';
 import 'package:capstone/provider/auth_provider.dart';
 import 'package:capstone/provider/user_provider.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class ProfilePage extends StatefulWidget {
   static const routeName = '/profile_page';
@@ -22,7 +24,12 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   FirebaseAuth auth = FirebaseAuth.instance;
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+  late UserProviderFirebase stateProvider;
   final picker = ImagePicker();
+
+  var url = "";
   @override
   void initState() {
     super.initState();
@@ -47,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
         return _displayUserDummy(context);
       } else if (state.state == ResultState.Hasdata) {
         UserModel user = state.resultUser;
-        return _displayUserFirebase(context, user);
+        return _displayUserFirebase(context, user, url.isNotEmpty);
       } else if (state.state == ResultState.Nodata) {
         return _displayUserDummy(context);
       } else if (state.state == ResultState.Error) {
@@ -106,109 +113,132 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
-  Widget _displayUserFirebase(BuildContext context, UserModel user) {
-    return SafeArea(
-      child: Material(
-        child: Container(
-          color: Colors.blue[100],
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(bottom: 4.0),
-                  height: 300.0,
-                  color: Colors.blue,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Center(
-                        child: GestureDetector(
-                          child: FadeInImage(
-                            width: 150,
-                            height: 150,
-                            placeholder:
-                                const AssetImage('assets/images/user.png'),
-                            image: NetworkImage(user.images),
-                            fit: BoxFit.cover,
-                          ),
-                          onTap: () {
-                            _changeFile();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("chang foto prfile"),
-                              duration: Duration(seconds: 1),
-                            ));
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24.0),
-                        child: Text(user.name.toUpperCase(),
-                            style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 8.0, left: 12, right: 12),
+  Widget _displayUserFirebase(
+      BuildContext context, UserModel user, bool imagesLokal) {
+    return Consumer<UserProviderFirebase>(
+      builder: (context, state, _) {
+        stateProvider = state;
+        return SafeArea(
+          child: Material(
+            child: Container(
+              color: Colors.blue[100],
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(bottom: 4.0),
+                      height: 300.0,
+                      color: Colors.blue,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20)),
-                                onPressed: () {
-                                  Navigation.navigateData(
-                                      EditProfileInPage.routeName, user);
-                                },
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Edit Profile",
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.black),
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Center(
+                            child: imagesLokal
+                                ? GestureDetector(
+                                    child: FadeInImage(
+                                      width: 150,
+                                      height: 150,
+                                      placeholder: const AssetImage(
+                                          'assets/images/user.png'),
+                                      image: NetworkImage(url),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    onTap: () {
+                                      _changeFile();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text("chang foto prfile"),
+                                        duration: Duration(seconds: 1),
+                                      ));
+                                    },
+                                  )
+                                : GestureDetector(
+                                    child: FadeInImage(
+                                      width: 150,
+                                      height: 150,
+                                      placeholder: const AssetImage(
+                                          'assets/images/user.png'),
+                                      image: NetworkImage(user.images),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    onTap: () {
+                                      _changeFile();
+                                    },
                                   ),
-                                ),
-                              )),
-                          Container(
-                              margin: EdgeInsets.only(top: 12),
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20)),
-                                onPressed: () {},
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    "Bantuan",
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.black),
-                                  ),
-                                ),
-                              )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24.0),
+                            child: Text(user.name.toUpperCase(),
+                                style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                          )
                         ],
                       ),
-                    ))
-              ]),
-        ),
-      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 8.0, left: 12, right: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 20)),
+                                    onPressed: () {
+                                      Navigation.navigateData(
+                                          EditProfileInPage.routeName, user);
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        "Edit Profile",
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ),
+                                    ),
+                                  )),
+                              Container(
+                                  margin: EdgeInsets.only(top: 12),
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 20)),
+                                    onPressed: () {},
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        "Bantuan",
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ),
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ))
+                  ]),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -218,10 +248,38 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _changeFile() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    firebase_storage.UploadTask uploadTask;
     if (pickedFile != null) {
       File _imageFile = File(pickedFile.path);
+      var reslutan = await firebase_storage.FirebaseStorage.instance
+          .ref('profile/${auth.currentUser!.uid}-imageprofile')
+          .putFile(_imageFile);
+      var taskSnapshot = await reslutan.metadata;
+      await _getImages(taskSnapshot!.name);
     } else {
       File _imageFile = File(pickedFile!.path);
+      var reslutan = await firebase_storage.FirebaseStorage.instance
+          .ref('profile/${auth.currentUser!.uid}-imageprofile')
+          .putFile(_imageFile);
+      var taskSnapshot = await reslutan.metadata;
+      await _getImages(taskSnapshot!.name);
     }
+  }
+
+  Future<void> _getImages(urls) async {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("chang foto prfile"),
+      duration: Duration(seconds: 5),
+    ));
+    String images = await firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('profile')
+        .child("$urls")
+        .getDownloadURL();
+    var user = Usera(email: '', name: '', minat: '', images: images);
+    await stateProvider.updateImage(user);
+    setState(() {
+      url = images;
+    });
   }
 }

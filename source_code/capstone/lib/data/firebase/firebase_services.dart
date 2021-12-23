@@ -32,4 +32,16 @@ class FirebaseServicesa {
         .then((value) => getUser(uid))
         .catchError((error) => print("Failed to update user: $error"));
   }
+
+  Future<dynamic> updateImage(String uid, Usera user) async {
+    final _usersCollectionReference = firestoreInstance.collection("users");
+    var update = {
+      'images': user.images,
+    };
+    return _usersCollectionReference
+        .doc(uid)
+        .update(update)
+        .then((value) => getUser(uid))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
 }

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:capstone/ui/dashboard_page.dart';
-import 'package:capstone/ui/event_page.dart';
 import 'package:capstone/ui/profile_page.dart';
 import 'package:capstone/ui/user_list_page.dart';
 import 'package:capstone/widgets/platform_widget.dart';
